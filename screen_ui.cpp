@@ -84,6 +84,8 @@ ScreenRecoveryUI::ScreenRecoveryUI() :
     for (int i = 0; i < NR_ICONS; i++)
         backgroundIcon[i] = NULL;
 
+    memset(text, 0, sizeof(text));
+
     pthread_mutex_init(&updateMutex, NULL);
     self = this;
 }
