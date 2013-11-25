@@ -78,7 +78,9 @@ ScreenRecoveryUI::ScreenRecoveryUI() :
     menu_show_start(0),
     max_menu_rows(0),
     animation_fps(20),
-    installing_frames(-1) {
+    installing_frames(-1),
+    stage(-1),
+    max_stage(-1) {
 
     headerIcon = NULL;
     for (int i = 0; i < NR_ICONS; i++)
@@ -109,14 +111,27 @@ void ScreenRecoveryUI::draw_background_locked(Icon icon)
         int iconHeight = gr_get_height(surface);
         int textWidth = gr_get_width(text_surface);
         int textHeight = gr_get_height(text_surface);
+        int stageHeight = gr_get_height(stageMarkerEmpty);
+
+        int sh = (max_stage >= 0) ? stageHeight : 0;
 
         iconX = (gr_fb_width() - iconWidth) / 2;
-        iconY = (gr_fb_height() - (iconHeight+textHeight+40)) / 2;
+        iconY = (gr_fb_height() - (iconHeight+textHeight+40+sh)) / 2;
 
         int textX = (gr_fb_width() - textWidth) / 2;
-        int textY = ((gr_fb_height() - (iconHeight+textHeight+40)) / 2) + iconHeight + 40;
+        int textY = ((gr_fb_height() - (iconHeight+textHeight+40+sh)) / 2) + iconHeight + 40;
 
         gr_blit(surface, 0, 0, iconWidth, iconHeight, iconX, iconY);
+        if (stageHeight > 0) {
+            int sw = gr_get_width(stageMarkerEmpty);
+            int x = (gr_fb_width() - max_stage * gr_get_width(stageMarkerEmpty)) / 2;
+            int y = iconY + iconHeight + 20;
+            for (int i = 0; i < max_stage; ++i) {
+                gr_blit((i < stage) ? stageMarkerFill : stageMarkerEmpty,
+                        0, 0, sw, stageHeight, x, y);
+                x += sw;
+            }
+        }
 
         gr_color(255, 255, 255, 255);
         gr_texticon(textX, textY, text_surface);
@@ -500,6 +515,8 @@ void ScreenRecoveryUI::Init()
 
     LoadBitmap("progress_empty", &progressBarEmpty);
     LoadBitmap("progress_fill", &progressBarFill);
+    LoadBitmap("stage_empty", &stageMarkerEmpty);
+    LoadBitmap("stage_fill", &stageMarkerFill);
 
     LoadLocalizedBitmap("installing_text", &backgroundText[INSTALLING_UPDATE]);
     LoadLocalizedBitmap("erasing_text", &backgroundText[ERASING]);
@@ -540,8 +557,6 @@ void ScreenRecoveryUI::SetLocale(const char* new_locale) {
 void ScreenRecoveryUI::SetBackground(Icon icon)
 {
     pthread_mutex_lock(&updateMutex);
-
-    printf("ScreenRecoveryUI::SetBackground: %d\n", (int)icon);
 
     // Adjust the offset to account for the positioning of the
     // base image on the screen.
@@ -602,6 +617,13 @@ void ScreenRecoveryUI::SetProgress(float fraction)
             update_progress_locked();
         }
     }
+    pthread_mutex_unlock(&updateMutex);
+}
+
+void ScreenRecoveryUI::SetStage(int current, int max) {
+    pthread_mutex_lock(&updateMutex);
+    stage = current;
+    max_stage = max;
     pthread_mutex_unlock(&updateMutex);
 }
 

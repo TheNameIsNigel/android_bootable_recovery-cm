@@ -39,6 +39,8 @@ class ScreenRecoveryUI : public RecoveryUI {
     void ShowProgress(float portion, float seconds);
     void SetProgress(float fraction);
 
+    void SetStage(int current, int max);
+
     // text log
     void ShowText(bool visible);
     bool IsTextVisible();
@@ -66,9 +68,6 @@ class ScreenRecoveryUI : public RecoveryUI {
 
     enum UIElement { HEADER, MENU, TOP, MENU_SEL_BG, MENU_SEL_FG, LOG, TEXT_FILL, ERROR_TEXT };
     virtual void SetColor(UIElement e);
-
-  protected:
-    int install_overlay_offset_x, install_overlay_offset_y;
 
   private:
 	int overlay_offset_x, overlay_offset_y;
@@ -129,6 +128,12 @@ class ScreenRecoveryUI : public RecoveryUI {
     int installing_frames;
 
     int iconX, iconY;
+  protected:
+    int install_overlay_offset_x, install_overlay_offset_y;
+  private:
+    int overlay_offset_x, overlay_offset_y;
+
+    int stage, max_stage;
 
     int log_char_height, log_char_width;
     int char_height, char_width;
