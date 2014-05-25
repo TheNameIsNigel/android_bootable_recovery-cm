@@ -151,6 +151,7 @@ private:
     int last_key;
 
     // Swipe tracking
+    int in_touch; // 1 = in a touch
     int in_swipe;
 
     point touch_start;
