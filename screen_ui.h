@@ -71,6 +71,8 @@ class ScreenRecoveryUI : public RecoveryUI {
     int install_overlay_offset_x, install_overlay_offset_y;
 
   private:
+	int overlay_offset_x, overlay_offset_y;
+    int stage, max_stage;
     Icon currentIcon;
     int installingFrame;
     const char* locale;
@@ -83,6 +85,8 @@ class ScreenRecoveryUI : public RecoveryUI {
     gr_surface *installation;
     gr_surface progressBarEmpty;
     gr_surface progressBarFill;
+    gr_surface stageMarkerEmpty;
+    gr_surface stageMarkerFill;
 
     ProgressType progressBarType;
 
