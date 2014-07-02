@@ -19,8 +19,6 @@
 
 #include "ui.h"
 
-#define KEY_FLAG_ABS 0x8000
-
 class Device {
   public:
     virtual ~Device() { }

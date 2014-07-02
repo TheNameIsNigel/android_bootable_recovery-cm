@@ -23,101 +23,97 @@
 #include "roots.h"
 
 static const char* HEADERS[] = { "Swipe up/down to change selections;",
-  "swipe right to select, or left to go back.",
-  "",
-  NULL };
-  
-  static const char* ITEMS[] =  {"reboot system now",
-    "apply update",
-    "wipe data/factory reset",
-    "wipe cache partition",
-    "wipe media",
-    NULL };
-    
-    class DefaultUI : public ScreenRecoveryUI {
-    public:
-      virtual KeyAction CheckKey(int key) {
-	if (key == KEY_HOME) {
-	  return TOGGLE;
-	}
-	return ENQUEUE;
-      }
-    };
-    
-    extern int ui_root_menu;
-    
-    class DefaultDevice : public Device {
-    public:
-      DefaultDevice() :
-      ui(new DefaultUI) {
-	// Remove "wipe media" option for non-datamedia devices
-	if (!is_data_media()) {
-	  ITEMS[4] = NULL;
-	}
-      }
-      
-      RecoveryUI* GetUI() { return ui; }
-      
-      int HandleMenuKey(int key, int visible) {
-	if (visible) {
-	  if (key & KEY_FLAG_ABS) {
-	    return (key & (~KEY_FLAG_ABS));
-	  }
-	  switch (key) {
-	    case KEY_RIGHTSHIFT:
-	    case KEY_DOWN:
-	    case KEY_VOLUMEDOWN:
-	    case KEY_MENU:
-	      return kHighlightDown;
-	      
-	    case KEY_LEFTSHIFT:
-	    case KEY_UP:
-	    case KEY_VOLUMEUP:
-	    case KEY_SEARCH:
-	      return kHighlightUp;
-	      
-	    case KEY_ENTER:
-	    case KEY_POWER:
-	    case BTN_MOUSE:
-	    case KEY_HOME:
-	    case KEY_HOMEPAGE:
-	    case KEY_SEND:
-	      return kInvokeItem;
-	      
-	    case KEY_BACKSPACE:
-	    case KEY_BACK:
-	      if (!ui_root_menu)
-		return kGoBack;
-	  }
-	}
-	
-	return kNoAction;
-      }
-      
-      BuiltinAction InvokeMenuItem(int menu_position) {
-	if (menu_position < 0 ||
-	  menu_position >= (int)(sizeof(ITEMS)/sizeof(ITEMS[0])) ||
-	  ITEMS[menu_position] == NULL) {
-	  return NO_ACTION;
-	  }
-	  switch (menu_position) {
-	    case 0: return REBOOT;
-	    case 1: return APPLY_UPDATE;
-	    case 2: return WIPE_DATA;
-	    case 3: return WIPE_CACHE;
-	    case 4: return WIPE_MEDIA;
-	    default: return NO_ACTION;
-	  }
-      }
-      
-      const char* const* GetMenuHeaders() { return HEADERS; }
-      const char* const* GetMenuItems() { return ITEMS; }
-      
-    private:
-      RecoveryUI* ui;
-    };
-    
-    Device* make_device() {
-      return new DefaultDevice();
+                                 "swipe right to select, or left to go back.",
+                                 "",
+                                 NULL };
+
+static const char* ITEMS[] =  {"reboot system now",
+                               "apply update",
+                               "wipe data/factory reset",
+                               "wipe cache partition",
+                               "wipe media",
+                               NULL };
+
+class DefaultUI : public ScreenRecoveryUI {
+  public:
+    virtual KeyAction CheckKey(int key) {
+        if (key == KEY_HOME) {
+            return TOGGLE;
+        }
+        return ENQUEUE;
     }
-    
+};
+
+extern int ui_root_menu;
+
+class DefaultDevice : public Device {
+  public:
+    DefaultDevice() :
+        ui(new DefaultUI) {
+        // Remove "wipe media" option for non-datamedia devices
+        if (!is_data_media()) {
+            ITEMS[4] = NULL;
+        }
+    }
+
+    RecoveryUI* GetUI() { return ui; }
+
+    int HandleMenuKey(int key, int visible) {
+        if (visible) {
+            switch (key) {
+              case KEY_RIGHTSHIFT:
+              case KEY_DOWN:
+              case KEY_VOLUMEDOWN:
+              case KEY_MENU:
+                return kHighlightDown;
+
+              case KEY_LEFTSHIFT:
+              case KEY_UP:
+              case KEY_VOLUMEUP:
+              case KEY_SEARCH:
+                return kHighlightUp;
+
+              case KEY_ENTER:
+              case KEY_POWER:
+              case BTN_MOUSE:
+              case KEY_HOME:
+              case KEY_HOMEPAGE:
+              case KEY_SEND:
+                return kInvokeItem;
+
+              case KEY_BACKSPACE:
+              case KEY_BACK:
+                if (!ui_root_menu)
+                  return kGoBack;
+            }
+        }
+
+        return kNoAction;
+    }
+
+    BuiltinAction InvokeMenuItem(int menu_position) {
+        if (menu_position < 0 ||
+                menu_position >= (int)(sizeof(ITEMS)/sizeof(ITEMS[0])) ||
+                ITEMS[menu_position] == NULL) {
+            return NO_ACTION;
+        }
+        switch (menu_position) {
+          case 0: return REBOOT;
+          case 1: return APPLY_UPDATE;
+          case 2: return WIPE_DATA;
+          case 3: return WIPE_CACHE;
+          case 4: return WIPE_MEDIA;
+	  default: return NO_ACTION;
+        }
+    }
+
+    const char* const* GetMenuHeaders() { return HEADERS; }
+    const char* const* GetMenuItems() { return ITEMS; }
+
+  private:
+    RecoveryUI* ui;
+};
+
+Device* make_device() {
+    return new DefaultDevice();
+}
