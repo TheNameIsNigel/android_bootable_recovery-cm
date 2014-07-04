@@ -1012,6 +1012,29 @@ out:
 int ui_root_menu = 0;
 
 static void
+show_cot_settings_menu(Device* device) {
+	static const char* HEADERS[] = { "COT Settings",
+                                 "",
+                                 NULL };
+								 
+	static const char* ITEMS[] =  {"About COT",
+                               NULL };
+							   
+	for (;;) {
+		int chosen_item = get_menu_selection(HEADERS, ITEMS, 0, 0, device);
+		switch(chosen_item) {
+			case 0:
+				ui->Print("\n-- Displaying About dialog...\n");
+				ui->DialogShowError("Cannibal Open Touch v3.0!");
+				break;
+			case Device::kGoBack:
+				return;
+				break;
+		}
+	}
+}
+
+static void
 prompt_and_wait(Device* device, int status) {
     const char* const* headers = prepend_title(device->GetMenuHeaders());
 
@@ -1071,6 +1094,10 @@ prompt_and_wait(Device* device, int status) {
                         return;  // reboot if logs aren't visible
                     }
                     break;
+					
+				case Device::COT_SETTINGS:
+					show_cot_settings_menu(device);
+					break;
             }
             if (status == Device::kRefresh) {
                 status = 0;
