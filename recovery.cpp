@@ -1025,7 +1025,7 @@ show_cot_settings_menu(Device* device) {
 		switch(chosen_item) {
 			case 0:
 				ui->Print("\n-- Displaying About dialog...\n");
-				ui->DialogShowError("Cannibal Open Touch v3.0!");
+				ui->DialogShowAbout("Cannibal Open Touch v3.0!");
 				break;
 			case Device::kGoBack:
 				return;

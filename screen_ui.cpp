@@ -275,7 +275,7 @@ void ScreenRecoveryUI::draw_dialog()
         gr_set_font("menu");
     }
 
-    if (dialog_icon == ERROR) {
+    if (dialog_icon == ERROR || dialog_icon == ABOUT) {
         /*
          * This could be improved...
          *
@@ -294,7 +294,7 @@ void ScreenRecoveryUI::draw_dialog()
         SetColor(MENU_SEL_BG);
         gr_fill(x-8, y-8, x+w+8, y+h+8);
         SetColor(MENU_SEL_FG);
-        gr_text(x, y, "Okay", 0);
+        gr_text(x, y, "Tap to dismiss", 0);
     }
 }
 
@@ -494,6 +494,7 @@ void ScreenRecoveryUI::Init()
     backgroundIcon[ERASING] = backgroundIcon[INSTALLING_UPDATE];
     LoadBitmap("icon_info", &backgroundIcon[INFO]);
     LoadBitmap("icon_error", &backgroundIcon[ERROR]);
+	LoadBitmap("icon_about", &backgroundIcon[ABOUT]);
     backgroundIcon[NO_COMMAND] = backgroundIcon[ERROR];
 
     LoadBitmap("progress_empty", &progressBarEmpty);
@@ -658,6 +659,17 @@ void ScreenRecoveryUI::DialogShowError(const char* text)
     dialog_icon = ERROR;
     update_screen_locked();
     pthread_mutex_unlock(&updateMutex);
+}
+
+void ScreenRecoveryUI::DialogShowAbout(const char* text)
+{
+	pthread_mutex_lock(&updateMutex);
+	free(dialog_text);
+	dialog_text = strdup(text);
+	dialog_show_log = false;
+	dialog_icon = ABOUT;
+	update_screen_locked();
+	pthread_mutex_unlock(&updateMutex);
 }
 
 void ScreenRecoveryUI::DialogShowErrorLog(const char* text)

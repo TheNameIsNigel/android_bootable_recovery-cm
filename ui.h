@@ -132,6 +132,7 @@ class RecoveryUI {
     virtual void ClearLog() = 0;
     virtual void DialogShowInfo(const char* text) = 0;
     virtual void DialogShowError(const char* text) = 0;
+	virtual void DialogShowAbout(const char* text) = 0;
     virtual void DialogShowErrorLog(const char* text) = 0;
     virtual int  DialogShowing() const = 0;
     virtual bool DialogDismissable() const = 0;

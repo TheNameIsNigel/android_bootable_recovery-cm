@@ -49,6 +49,7 @@ class ScreenRecoveryUI : public RecoveryUI {
     void ClearLog();
     void DialogShowInfo(const char* text);
     void DialogShowError(const char* text);
+	void DialogShowAbout(const char* text);
     void DialogShowErrorLog(const char* text);
     int  DialogShowing() const { return (dialog_text != NULL); }
     bool DialogDismissable() const { return (dialog_icon == ERROR); }
