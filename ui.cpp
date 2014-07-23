@@ -466,7 +466,13 @@ void RecoveryUI::process_abs(input_device* dev, int code, int value) {
         return;
     }
     if (code == ABS_MT_TRACKING_ID) {
-        if (value != dev->tracking_id) {
+		/*
+		 * Some devices send an initial ABS_MT_SLOT event before switching
+		 * to type B events, so discard any type A state related to slot.
+		 */
+		dev->slot_first = dev->slot_current = 0;
+		 
+		if (value != dev->tracking_id) {
             dev->tracking_id = value;
             if (dev->tracking_id < 0) {
                 dev->slot_nr_active--;

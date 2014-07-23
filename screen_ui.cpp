@@ -243,11 +243,11 @@ void ScreenRecoveryUI::draw_menu_item(int textrow, const char *text, int selecte
         gr_fill(0, (textrow)*char_height,
                 gr_fb_width(), (textrow+3)*char_height-1);
         SetColor(MENU_SEL_FG);
-        gr_text(25, (textrow+1)*char_height-1, text, 0);
+        gr_text(4, (textrow+1)*char_height-1, text, 0);
         SetColor(MENU);
     }
     else {
-        gr_text(25, (textrow+1)*char_height-1, text, 0);
+        gr_text(4, (textrow+1)*char_height-1, text, 0);
     }
     
     gr_color(SEPARATOR_COLOR);
@@ -725,6 +725,11 @@ void ScreenRecoveryUI::StartMenu(const char* const * headers, const char* const 
 int ScreenRecoveryUI::SelectMenu(int sel) {
     int old_sel;
     pthread_mutex_lock(&updateMutex);
+    printf("SelectMenu: sel=0x%04x\n", sel);
+    if (sel & KEY_FLAG_ABS) {
+		sel = menu_show_start + (sel & ~KEY_FLAG_ABS);
+		printf("SelectMenu: mss=%d => %d\n", menu_show_start, sel);
+	}
     if (show_menu > 0) {
         old_sel = menu_sel;
         menu_sel = sel;
