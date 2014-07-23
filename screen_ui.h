@@ -70,8 +70,6 @@ class ScreenRecoveryUI : public RecoveryUI {
     virtual void SetColor(UIElement e);
 
   private:
-	int overlay_offset_x, overlay_offset_y;
-    int stage, max_stage;
     Icon currentIcon;
     int installingFrame;
     const char* locale;
