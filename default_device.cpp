@@ -27,12 +27,11 @@ static const char* HEADERS[] = { "Swipe up/down to change selections;",
                                  "",
                                  NULL };
 
-static const char* ITEMS[] =  {"Reboot to Android",
-                               "Flash ZIP",
-                               "Factory Reset",
-                               "Clear Cache",
-							   "Recovery Settings",
-                               "Wipe User Media",
+static const char* ITEMS[] =  {"reboot system now",
+                               "apply update",
+                               "wipe data/factory reset",
+                               "wipe cache partition",
+                               "wipe media",
                                NULL };
 
 class DefaultUI : public ScreenRecoveryUI {
@@ -53,7 +52,7 @@ class DefaultDevice : public Device {
         ui(new DefaultUI) {
         // Remove "wipe media" option for non-datamedia devices
         if (!is_data_media()) {
-            ITEMS[5] = NULL;
+            ITEMS[4] = NULL;
         }
     }
 
@@ -61,9 +60,6 @@ class DefaultDevice : public Device {
 
     int HandleMenuKey(int key, int visible) {
         if (visible) {
-            if (key & KEY_FLAG_ABS) {
-                return (key & (~KEY_FLAG_ABS));
-            }
             switch (key) {
               case KEY_RIGHTSHIFT:
               case KEY_DOWN:
@@ -106,8 +102,7 @@ class DefaultDevice : public Device {
           case 1: return APPLY_UPDATE;
           case 2: return WIPE_DATA;
           case 3: return WIPE_CACHE;
-          case 4: return COT_SETTINGS;
-		  case 5: return WIPE_MEDIA;
+          case 4: return WIPE_MEDIA;
 	  default: return NO_ACTION;
         }
     }

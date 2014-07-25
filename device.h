@@ -19,8 +19,6 @@
 
 #include "ui.h"
 
-#define KEY_FLAG_ABS 0x8000
-
 class Device {
   public:
     virtual ~Device() { }
@@ -68,7 +66,7 @@ class Device {
     virtual int HandleMenuKey(int key, int visible) = 0;
 
     enum BuiltinAction { NO_ACTION, REBOOT, APPLY_UPDATE,
-                         WIPE_DATA, WIPE_CACHE, WIPE_MEDIA, COT_SETTINGS };
+                         WIPE_DATA, WIPE_CACHE, WIPE_MEDIA };
 
     // Perform a recovery action selected from the menu.
     // 'menu_position' will be the item number of the selected menu
