@@ -719,20 +719,17 @@ void ScreenRecoveryUI::StartMenu(const char* const * headers, const char* const 
         menu_items = i;
         show_menu = 1;
         menu_sel = initial_selection;
-        if (menu_show_start <= menu_sel - max_menu_rows || menu_show_start > menu_sel) {
-			menu_show_start = menu_sel;
-		}
         update_screen_locked();
     }
     pthread_mutex_unlock(&updateMutex);
 }
 
-int ScreenRecoveryUI::SelectMenu(int sel, bool abs) {
+int ScreenRecoveryUI::SelectMenu(int sel) {
     int old_sel;
     pthread_mutex_lock(&updateMutex);
 printf("SelectMenu: sel=0x%04x\n", sel);
-    if (abs) {
-        sel += menu_show_start;
+    if (sel & KEY_FLAG_ABS) {
+        sel = menu_show_start + (sel & ~KEY_FLAG_ABS);
 printf("SelectMenu: mss=%d => %d\n", menu_show_start, sel);
     }
     if (show_menu > 0) {
