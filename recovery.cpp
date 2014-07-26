@@ -1061,7 +1061,7 @@ prompt_and_wait(Device* device, int status) {
                     for (;;) {
                         int RebootSelection = get_menu_selection(RebootMenuHeaders, RebootMenuItems, 0, 0, device);
                         switch (chosen_item) {
-                            case 0;
+                            case 0:
                                 // default action is a standard reboot, so return here
                                 return;
                             case 1:
