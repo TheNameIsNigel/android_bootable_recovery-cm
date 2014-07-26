@@ -1070,9 +1070,11 @@ prompt_and_wait(Device* device, int status) {
                             case 2:
                                 // this will be where we reboot bootloader
                                 break;
+                            case Device::kGoBack:
+                                break;
                         }
                     }
-                    return;
+                    break;
                 case Device::WIPE_DATA:
                     wipe_data(ui->IsTextVisible(), device);
                     if (!ui->IsTextVisible()) return;
