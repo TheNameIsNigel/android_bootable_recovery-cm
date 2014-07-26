@@ -1067,6 +1067,9 @@ prompt_and_wait(Device* device, int status) {
                     wipe_media(ui->IsTextVisible(), device);
                     if (!ui->IsTextVisible()) return;
                     break;
+                    
+                case Device::RECOVERY_SETTINGS:
+					break;
 
                 case Device::APPLY_UPDATE:
                     status = show_apply_update_menu(device);

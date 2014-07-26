@@ -27,11 +27,12 @@ static const char* HEADERS[] = { "Swipe up/down to change selections;",
                                  "",
                                  NULL };
 
-static const char* ITEMS[] =  {"reboot system now",
-                               "apply update",
-                               "wipe data/factory reset",
-                               "wipe cache partition",
-                               "wipe media",
+static const char* ITEMS[] =  {"Reboot",
+                               "Flash ZIP",
+                               "Factory Reset",
+                               "Erase Cache",
+                               "Recovery Settings"
+                               "Erase User Media",
                                NULL };
 
 class DefaultUI : public ScreenRecoveryUI {
@@ -52,7 +53,7 @@ class DefaultDevice : public Device {
         ui(new DefaultUI) {
         // Remove "wipe media" option for non-datamedia devices
         if (!is_data_media()) {
-            ITEMS[4] = NULL;
+            ITEMS[5] = NULL;
         }
     }
 
@@ -105,7 +106,8 @@ class DefaultDevice : public Device {
           case 1: return APPLY_UPDATE;
           case 2: return WIPE_DATA;
           case 3: return WIPE_CACHE;
-          case 4: return WIPE_MEDIA;
+          case 4: return RECOVERY_SETTINGS;
+          case 5: return WIPE_MEDIA;
 	  default: return NO_ACTION;
         }
     }
