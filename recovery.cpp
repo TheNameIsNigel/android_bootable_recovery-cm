@@ -1029,7 +1029,7 @@ show_reboot_menu(Device* device) {
 
 	for (;;) {
 		int RebootSelection = get_menu_selection(RebootMenuHeaders, RebootMenuItems, 0, 0, device);
-		switch (chosen_item) {
+		switch (RebootSelection) {
 			case 0:
 				// reboot us!
 				vold_unmount_all();
