@@ -1066,6 +1066,8 @@ prompt_and_wait(Device* device, int status) {
                                 return;
                             case 1:
                                 // this will be where we reboot recovery
+                                vold_unmount_all();
+                                android_reboot(ANDROID_RB_RESTART2, 0, "recovery");
                                 break;
                             case 2:
                                 // this will be where we reboot bootloader
