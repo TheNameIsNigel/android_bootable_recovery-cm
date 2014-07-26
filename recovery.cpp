@@ -1047,29 +1047,29 @@ prompt_and_wait(Device* device, int status) {
         for (;;) {
             switch (chosen_item) {
                 case Device::REBOOT:
-					static const char* RebootMenuHeaders[] = { "Reboot",
-						"",
-						NULL
-					};
+                    static const char* RebootMenuHeaders[] = { "Reboot",
+                        "",
+                        NULL
+                    };
 					
-					static const char* RebootMenuItems[] = { "Reboot to Android",
-						"Reboot Recovery",
-						"Reboot to Bootloader",
-						NULL
-					};
+                    static const char* RebootMenuItems[] = { "Reboot to Android",
+                        "Reboot Recovery",
+                        "Reboot to Bootloader",
+                        NULL
+                    };
 					
-					for (;;) {
-						int RebootSelection = get_menu_selection(RebootMenuHeaders, RebootMenuItems, 0, 0, device);
-						switch (chosen_item) {
-							case 0;
-								// default action is a standard reboot, so return here
-								return;
-							case 1:
-								// this will be where we reboot recovery
-								break;
-							case 2:
-								// this will be where we reboot bootloader
-								break;
+                    for (;;) {
+                        int RebootSelection = get_menu_selection(RebootMenuHeaders, RebootMenuItems, 0, 0, device);
+                        switch (chosen_item) {
+                            case 0;
+                                // default action is a standard reboot, so return here
+                                return;
+                            case 1:
+                                // this will be where we reboot recovery
+                                break;
+                            case 2:
+                                // this will be where we reboot bootloader
+                                break;
                     return;
                 case Device::WIPE_DATA:
                     wipe_data(ui->IsTextVisible(), device);
