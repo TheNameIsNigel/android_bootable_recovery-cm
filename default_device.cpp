@@ -31,7 +31,7 @@ static const char* ITEMS[] =  {"Reboot",
                                "Flash ZIP",
                                "Factory Reset",
                                "Erase Cache",
-                               "Recovery Settings"
+                               "Recovery Settings",
                                "Erase User Media",
                                NULL };
 

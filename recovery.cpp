@@ -103,13 +103,13 @@ static const struct option OPTIONS[] = {
   { NULL, 0, NULL, 0 },
 };
 
-#define LAST_LOG_FILE "/cache/recovery/last_log"
+#define LAST_LOG_FILE "/sdcard/0/cotrecovery/last_log.ngl"
 
 static const char *CACHE_LOG_DIR = "/cache/recovery";
 static const char *COMMAND_FILE = "/cache/recovery/command";
 static const char *INTENT_FILE = "/cache/recovery/intent";
-static const char *LOG_FILE = "/cache/recovery/log";
-static const char *LAST_INSTALL_FILE = "/cache/recovery/last_install";
+static const char *LOG_FILE = "/sdcard/0/cotrecovery/recovery_log.ngl";
+static const char *LAST_INSTALL_FILE = "/sdcard/0/cotrecovery/last_install.ngl";
 static const char *LOCALE_FILE = "/cache/recovery/last_locale";
 static const char *CACHE_ROOT = "/cache";
 static const char *TEMPORARY_LOG_FILE = "/tmp/recovery.log";
