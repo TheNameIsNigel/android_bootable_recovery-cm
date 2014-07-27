@@ -1015,6 +1015,43 @@ out:
 int ui_root_menu = 0;
 
 static void
+show_reboot_menu(Device* device) {
+    static const char* RebootMenuHeaders[] = { "Reboot",
+        "",
+        NULL
+    };
+
+    static const char* RebootMenuItems[] = { "Reboot to Android",
+		"Reboot Recovery",
+		"Reboot to Bootloader",
+		NULL
+	};
+
+	for (;;) {
+		int RebootSelection = get_menu_selection(RebootMenuHeaders, RebootMenuItems, 0, 0, device);
+		switch (RebootSelection) {
+			case 0:
+				// reboot us!
+				vold_unmount_all();
+				android_reboot(ANDROID_RB_RESTART, 0, 0);
+				break;
+			case 1:
+				// this will be where we reboot recovery
+				vold_unmount_all();
+				android_reboot(ANDROID_RB_RESTART2, 0, "recovery");
+				break;
+			case 2:
+				// this will be where we reboot bootloader
+				vold_unmount_all();
+				android_reboot(ANDROID_RB_RESTART2, 0, "bootloader");
+				break;
+			case Device::kGoBack:
+				return;
+		}
+	}
+}
+
+static void
 prompt_and_wait(Device* device, int status) {
     const char* const* headers = prepend_title(device->GetMenuHeaders());
 
@@ -1047,8 +1084,9 @@ prompt_and_wait(Device* device, int status) {
         for (;;) {
             switch (chosen_item) {
                 case Device::REBOOT:
-                    return;
-
+                    show_reboot_menu(device);
+                    if (!ui->IsTextVisible()) return;
+                    break;
                 case Device::WIPE_DATA:
                     wipe_data(ui->IsTextVisible(), device);
                     if (!ui->IsTextVisible()) return;
@@ -1067,6 +1105,9 @@ prompt_and_wait(Device* device, int status) {
                     wipe_media(ui->IsTextVisible(), device);
                     if (!ui->IsTextVisible()) return;
                     break;
+                    
+                case Device::RECOVERY_SETTINGS:
+					break;
 
                 case Device::APPLY_UPDATE:
                     status = show_apply_update_menu(device);
