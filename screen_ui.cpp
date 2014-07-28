@@ -456,7 +456,12 @@ void ScreenRecoveryUI::progress_loop() {
 }
 
 void ScreenRecoveryUI::LoadBitmap(const char* filename, gr_surface* surface) {
-    int result = res_create_display_surface(filename, surface);
+	const char* theme = "bloodred/";
+	
+	char buffer[256];
+	strncpy(buffer, theme, sizeof(buffer));
+	strncat(buffer, filename, sizeof(buffer));
+    int result = res_create_display_surface(buffer, surface);
     if (result < 0) {
         LOGE("missing bitmap %s\n(Code %d)\n", filename, result);
     }
