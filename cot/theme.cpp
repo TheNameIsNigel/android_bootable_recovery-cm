@@ -44,6 +44,7 @@
 #define THEME_CHOICE_BLUE 1
 
 extern RecoveryUI* ui;
+int selected_theme = "bloodred";
 
 void COTTheme::ShowMainMenu(Device* device) {
     static const char* ThemeChooserHeaders[] = { "Choose Theme",

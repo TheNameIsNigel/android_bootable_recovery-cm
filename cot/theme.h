@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-char selected_theme;
+int selected_theme;
 
 class COTTheme {
 	public:
