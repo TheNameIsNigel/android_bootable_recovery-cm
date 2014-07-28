@@ -28,6 +28,7 @@ static const char* HEADERS[] = { "Swipe up/down to change selections;",
                                  NULL };
 
 static const char* ITEMS[] =  {"Reboot",
+			       "Backup from PC",
                                "Flash ZIP",
                                "Factory Reset",
                                "Erase Cache",
@@ -53,7 +54,7 @@ class DefaultDevice : public Device {
         ui(new DefaultUI) {
         // Remove "wipe media" option for non-datamedia devices
         if (!is_data_media()) {
-            ITEMS[5] = NULL;
+            ITEMS[6] = NULL;
         }
     }
 
@@ -103,11 +104,12 @@ class DefaultDevice : public Device {
         }
         switch (menu_position) {
           case 0: return REBOOT;
-          case 1: return APPLY_UPDATE;
-          case 2: return WIPE_DATA;
-          case 3: return WIPE_CACHE;
-          case 4: return RECOVERY_SETTINGS;
-          case 5: return WIPE_MEDIA;
+          case 1: return BACKUP;
+          case 2: return APPLY_UPDATE;
+          case 3: return WIPE_DATA;
+          case 4: return WIPE_CACHE;
+          case 5: return RECOVERY_SETTINGS;
+          case 6: return WIPE_MEDIA;
 	  default: return NO_ACTION;
         }
     }
