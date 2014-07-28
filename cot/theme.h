@@ -15,6 +15,7 @@
 
 class COTTheme {
 	public:
+		const char* theme_name = "bloodred";
 		static void ShowMainMenu(Device* device);
 };
 
