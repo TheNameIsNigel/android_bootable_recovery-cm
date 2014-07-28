@@ -15,7 +15,7 @@
 
 class COTTheme {
 	public:
-		static const char* theme_name;
+		static char* theme_name;
 		static void ShowMainMenu(Device* device);
 };
 
