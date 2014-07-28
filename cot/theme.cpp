@@ -61,10 +61,10 @@ void COTTheme::ShowMainMenu(Device* device) {
         switch (ThemeChoice) {
             case THEME_CHOICE_RED:
             case THEME_CHOICE_BLUE:
-            break;
+				break;
 
-        case Device::kGoBack:
-            return;
+			case Device::kGoBack:
+				return;
         }
     }
 }
