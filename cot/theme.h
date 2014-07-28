@@ -13,9 +13,10 @@
  * limitations under the License.
  */
 
+const char* selected_theme;
+
 class COTTheme {
 	public:
-		const char* selected_theme = "bloodred";
 		static void ShowMainMenu(Device* device);
 };
 
