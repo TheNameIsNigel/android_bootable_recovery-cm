@@ -39,6 +39,8 @@ class ScreenRecoveryUI : public RecoveryUI {
     void ShowProgress(float portion, float seconds);
     void SetProgress(float fraction);
 
+    void SetStage(int current, int max);
+
     // text log
     void ShowText(bool visible);
     bool IsTextVisible();
@@ -46,8 +48,10 @@ class ScreenRecoveryUI : public RecoveryUI {
 
     // printing messages
     void Print(const char* fmt, ...); // __attribute__((format(printf, 1, 2)));
+    void ClearLog();
     void DialogShowInfo(const char* text);
     void DialogShowError(const char* text);
+    void DialogShowErrorLog(const char* text);
     int  DialogShowing() const { return (dialog_text != NULL); }
     bool DialogDismissable() const { return (dialog_icon == ERROR); }
     void DialogDismiss();
@@ -57,16 +61,13 @@ class ScreenRecoveryUI : public RecoveryUI {
     virtual int MenuItemHeight() const { return 3*char_height; }
     void StartMenu(const char* const * headers, const char* const * items,
                            int initial_selection);
-    int SelectMenu(int sel);
+    int SelectMenu(int sel, bool abs = false);
     void EndMenu();
 
     void Redraw();
 
     enum UIElement { HEADER, MENU, TOP, MENU_SEL_BG, MENU_SEL_FG, LOG, TEXT_FILL, ERROR_TEXT };
     virtual void SetColor(UIElement e);
-
-  protected:
-    int install_overlay_offset_x, install_overlay_offset_y;
 
   private:
     Icon currentIcon;
@@ -81,6 +82,8 @@ class ScreenRecoveryUI : public RecoveryUI {
     gr_surface *installation;
     gr_surface progressBarEmpty;
     gr_surface progressBarFill;
+    gr_surface stageMarkerEmpty;
+    gr_surface stageMarkerFill;
 
     ProgressType progressBarType;
 
@@ -99,6 +102,7 @@ class ScreenRecoveryUI : public RecoveryUI {
 
     // Log text overlay, displayed when a magic key is pressed
     char text[kMaxRows][kMaxCols];
+    int log_text_cols, log_text_rows;
     int text_cols, text_rows;
     int text_col, text_row, text_top;
     bool show_text;
@@ -106,13 +110,14 @@ class ScreenRecoveryUI : public RecoveryUI {
 
     Icon dialog_icon;
     char *dialog_text;
+    bool dialog_show_log;
 
     char menu[kMaxMenuRows][kMaxMenuCols];
     bool show_menu;
     int menu_items, menu_sel;
     int menu_show_start;
     int max_menu_rows;
-    
+
     int menu_item_start;
 
     pthread_t progress_t;
@@ -121,17 +126,23 @@ class ScreenRecoveryUI : public RecoveryUI {
     int installing_frames;
 
     int iconX, iconY;
-    
-    int char_height;
-    int char_width;
-    
+  protected:
+    int install_overlay_offset_x, install_overlay_offset_y;
+  private:
+    int overlay_offset_x, overlay_offset_y;
+
+    int stage, max_stage;
+
+    int log_char_height, log_char_width;
+    int char_height, char_width;
+
     int header_height;
     int header_width;
 
     void draw_install_overlay_locked(int frame);
     void draw_background_locked(Icon icon);
     void draw_progress_locked();
-    int draw_header_icon();
+    int  draw_header_icon();
     void draw_menu_item(int textrow, const char *text, int selected);
     void draw_dialog();
     void draw_screen_locked();

@@ -99,16 +99,17 @@ static const struct option OPTIONS[] = {
   { "locale", required_argument, NULL, 'l' },
   { "sideload", no_argument, NULL, 'a' },
   { "shutdown_after", no_argument, NULL, 'p' },
+  { "stages", required_argument, NULL, 'g' },
   { NULL, 0, NULL, 0 },
 };
 
-#define LAST_LOG_FILE "/cache/recovery/last_log"
+#define LAST_LOG_FILE "/sdcard/0/cotrecovery/last_log.ngl"
 
 static const char *CACHE_LOG_DIR = "/cache/recovery";
 static const char *COMMAND_FILE = "/cache/recovery/command";
 static const char *INTENT_FILE = "/cache/recovery/intent";
-static const char *LOG_FILE = "/cache/recovery/log";
-static const char *LAST_INSTALL_FILE = "/cache/recovery/last_install";
+static const char *LOG_FILE = "/sdcard/0/cotrecovery/recovery_log.ngl";
+static const char *LAST_INSTALL_FILE = "/sdcard/0/cotrecovery/last_install.ngl";
 static const char *LOCALE_FILE = "/cache/recovery/last_locale";
 static const char *CACHE_ROOT = "/cache";
 static const char *TEMPORARY_LOG_FILE = "/tmp/recovery.log";
@@ -118,6 +119,7 @@ static const char *SIDELOAD_TEMP_DIR = "/tmp/sideload";
 RecoveryUI* ui = NULL;
 char* locale = NULL;
 char recovery_version[PROPERTY_VALUE_MAX+1];
+char* stage = NULL;
 
 #include "mtdutils/mounts.h"
 
@@ -217,6 +219,7 @@ get_args(int *argc, char ***argv) {
     struct bootloader_message boot;
     memset(&boot, 0, sizeof(boot));
     get_bootloader_message(&boot);  // this may fail, leaving a zeroed structure
+    stage = strndup(boot.stage, sizeof(boot.stage));
 
     if (boot.command[0] != 0 && boot.command[0] != 255) {
         LOGI("Boot command: %.*s\n", (int)sizeof(boot.command), boot.command);
@@ -492,6 +495,8 @@ erase_volume(const char *volume, bool force = false) {
 
 static char*
 copy_sideloaded_package(const char* original_path) {
+  ui->ClearLog();
+  ui->SetBackground(RecoveryUI::INSTALLING_UPDATE);
   if (ensure_path_mounted(original_path) != 0) {
     LOGE("Can't mount %s\n", original_path);
     return NULL;
@@ -605,11 +610,11 @@ get_menu_selection(const char* const * headers, const char* const * items,
     // throw away keys pressed previously, so user doesn't
     // accidentally trigger menu items.
     ui->FlushKeys();
-    
-    // Count items to detect valid values for absolute get_menu_selection
+
+    // Count items to detect valid values for absolute selection
     int item_count = 0;
     while (items[item_count] != NULL)
-      ++item_count;
+        ++item_count;
 
     ui->StartMenu(headers, items, initial_selection);
     int selected = initial_selection;
@@ -635,20 +640,20 @@ get_menu_selection(const char* const * headers, const char* const * items,
         }
 
         int action = device->HandleMenuKey(key, visible);
-	
-	if (action >= 0) {
-	  if (action >= item_count) {
-	    action = Device::kNoAction;
-	  }
-	  else {
-	    // Absolute selection. Update selected item and give some
-	    // feedback in the UI by selecting the item for a short time.
-	    selected = action;
-	    action = Device::kInvokeItem;
-	    selected = ui->SelectMenu(selected);
-	    usleep(50*1000);
-	  }
-	}
+
+        if (action >= 0) {
+            if ((action & ~KEY_FLAG_ABS) >= item_count) {
+                action = Device::kNoAction;
+            }
+            else {
+                // Absolute selection.  Update selected item and give some
+                // feedback in the UI by selecting the item for a short time.
+                selected = action & ~KEY_FLAG_ABS;
+                action = Device::kInvokeItem;
+                selected = ui->SelectMenu(selected, true);
+                usleep(50*1000);
+            }
+        }
 
         if (action < 0) {
             switch (action) {
@@ -823,6 +828,9 @@ update_directory(const char* path, int* wipe_cache, Device* device) {
             } else {
                 result = install_package(new_path, wipe_cache, TEMPORARY_INSTALL_FILE);
             }
+            if (result != INSTALL_SUCCESS) {
+                ui->DialogShowErrorLog("Install failed");
+            }
             break;
         }
     } while (true);
@@ -924,11 +932,11 @@ static int enter_sideload_mode(int status, int* wipe_cache, Device* device) {
 
     static const char* list[] = { "Cancel sideload", NULL };
 
-    int item = get_menu_selection(headers, list, 0, 0, device);
-    if (item != 0)
-        status = apply_from_adb(wipe_cache, TEMPORARY_INSTALL_FILE);
+    get_menu_selection(headers, list, 0, 0, device);
+    int ret = apply_from_adb(wipe_cache, TEMPORARY_INSTALL_FILE);
 
-    if (status >= 0) {
+    if (ret != INSTALL_NONE) {
+        status = ret;
         if (status != INSTALL_SUCCESS) {
             ui->SetBackground(RecoveryUI::ERROR);
             ui->Print("Installation aborted.\n");
@@ -960,43 +968,41 @@ show_apply_update_menu(Device* device) {
     int wipe_cache;
     int status = INSTALL_ERROR;
 
-    for (;;) {
-        int chosen = get_menu_selection(headers, menu_items, 0, 0, device);
-        if (chosen == Device::kGoBack) {
-            break;
-        }
-        if (chosen == item_sideload) {
-            status = enter_sideload_mode(status, &wipe_cache, device);
+    int chosen = get_menu_selection(headers, menu_items, 0, 0, device);
+    if (chosen == Device::kGoBack) {
+        goto out;
+    }
+    if (chosen == item_sideload) {
+        status = enter_sideload_mode(status, &wipe_cache, device);
+    }
+    else {
+        storage_item* item = &items[chosen-1];
+        status = ensure_volume_mounted(item->vol);
+        if (status == 0) {
+            status = update_directory(item->path, &wipe_cache, device);
         }
         else {
-            storage_item* item = &items[chosen-1];
-            status = ensure_volume_mounted(item->vol);
-            if (status == 0) {
-                status = update_directory(item->path, &wipe_cache, device);
-            }
-            else {
-                status = INSTALL_ERROR;
-            }
-            ensure_volume_unmounted(item->vol);
+            status = INSTALL_ERROR;
         }
-        if (status == INSTALL_SUCCESS && wipe_cache) {
-            ui->Print("\n-- Wiping cache (at package request)...\n");
-            if (erase_volume("/cache")) {
-                ui->Print("Cache wipe failed.\n");
-            } else {
-                ui->Print("Cache wipe complete.\n");
-            }
+        ensure_volume_unmounted(item->vol);
+    }
+    if (status == INSTALL_SUCCESS && wipe_cache) {
+        ui->Print("\n-- Wiping cache (at package request)...\n");
+        if (erase_volume("/cache")) {
+            ui->Print("Cache wipe failed.\n");
+            ui->DialogShowInfo("Wiping cache ...");
+        } else {
+            ui->Print("Cache wipe complete.\n");
+                ui->DialogDismiss();
         }
-        if (status >= 0) {
-            if (status != INSTALL_SUCCESS) {
-                ui->SetBackground(RecoveryUI::ERROR);
-                ui->Print("Installation aborted.\n");
-            } else if (!ui->IsTextVisible()) {
-                break;
-            }
-            else {
-                ui->Print("\nInstallation complete.\n");
-            }
+    }
+    if (status >= 0) {
+        if (status != INSTALL_SUCCESS) {
+            ui->SetBackground(RecoveryUI::ERROR);
+            ui->Print("Installation aborted.\n");
+            ui->DialogShowErrorLog("Install failed");
+        } else if (ui->IsTextVisible()) {
+            ui->Print("\nInstallation complete.\n");
         }
     }
 
@@ -1007,6 +1013,43 @@ out:
 }
 
 int ui_root_menu = 0;
+
+static void
+show_reboot_menu(Device* device) {
+    static const char* RebootMenuHeaders[] = { "Reboot",
+        "",
+        NULL
+    };
+
+    static const char* RebootMenuItems[] = { "Reboot to Android",
+		"Reboot Recovery",
+		"Reboot to Bootloader",
+		NULL
+	};
+
+	for (;;) {
+		int RebootSelection = get_menu_selection(RebootMenuHeaders, RebootMenuItems, 0, 0, device);
+		switch (RebootSelection) {
+			case 0:
+				// reboot us!
+				vold_unmount_all();
+				android_reboot(ANDROID_RB_RESTART, 0, 0);
+				break;
+			case 1:
+				// this will be where we reboot recovery
+				vold_unmount_all();
+				android_reboot(ANDROID_RB_RESTART2, 0, "recovery");
+				break;
+			case 2:
+				// this will be where we reboot bootloader
+				vold_unmount_all();
+				android_reboot(ANDROID_RB_RESTART2, 0, "bootloader");
+				break;
+			case Device::kGoBack:
+				return;
+		}
+	}
+}
 
 static void
 prompt_and_wait(Device* device, int status) {
@@ -1041,8 +1084,9 @@ prompt_and_wait(Device* device, int status) {
         for (;;) {
             switch (chosen_item) {
                 case Device::REBOOT:
-                    return;
-
+                    show_reboot_menu(device);
+                    if (!ui->IsTextVisible()) return;
+                    break;
                 case Device::WIPE_DATA:
                     wipe_data(ui->IsTextVisible(), device);
                     if (!ui->IsTextVisible()) return;
@@ -1050,8 +1094,10 @@ prompt_and_wait(Device* device, int status) {
 
                 case Device::WIPE_CACHE:
                     ui->Print("\n-- Wiping cache...\n");
+                    ui->DialogShowInfo("Wiping cache ...");
                     erase_volume("/cache");
                     ui->Print("Cache wipe complete.\n");
+                    ui->DialogDismiss();
                     if (!ui->IsTextVisible()) return;
                     break;
 
@@ -1059,6 +1105,9 @@ prompt_and_wait(Device* device, int status) {
                     wipe_media(ui->IsTextVisible(), device);
                     if (!ui->IsTextVisible()) return;
                     break;
+                    
+                case Device::RECOVERY_SETTINGS:
+					break;
 
                 case Device::APPLY_UPDATE:
                     status = show_apply_update_menu(device);
@@ -1269,6 +1318,14 @@ main(int argc, char **argv) {
         case 'l': locale = optarg; break;
         case 'a': sideload = 1; break;
         case 'p': shutdown_after = true; break;
+        case 'g': {
+            if (stage == NULL || *stage == '\0') {
+                char buffer[20] = "1/";
+                strncat(buffer, optarg, sizeof(buffer)-3);
+                stage = strdup(buffer);
+            }
+            break;
+        }
         case '?':
             LOGE("Invalid command argument\n");
             continue;
@@ -1279,13 +1336,20 @@ main(int argc, char **argv) {
         load_locale_from_cache();
     }
     printf("locale is [%s]\n", locale);
+    printf("stage is [%s]\n", stage);
 
     Device* device = make_device();
     ui = device->GetUI();
     gCurrentUI = ui;
 
-    ui->SetLocale(locale);
     ui->Init();
+
+    int st_cur, st_max;
+    if (stage != NULL && sscanf(stage, "%d/%d", &st_cur, &st_max) == 2) {
+        ui->SetStage(st_cur, st_max);
+    }
+
+    ui->SetLocale(locale);
     ui->SetBackground(RecoveryUI::NONE);
     if (show_text) ui->ShowText(true);
 

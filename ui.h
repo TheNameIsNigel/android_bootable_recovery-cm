@@ -23,12 +23,69 @@
 
 #include "messagesocket.h"
 
+#define MAX_NR_INPUT_DEVICES    8
+#define MAX_NR_VKEYS            8
+
+/*
+ * Simple representation of a (x,y) coordinate with convenience operators
+ */
 struct point {
-  int x;
-  int y;
-  
-  point() : x(0), y(0) {}
-  void reset() { x = y = 0; }
+    point() : x(0), y(0) {}
+    point operator+(const point& rhs) const {
+        point tmp;
+        tmp.x = x + rhs.x;
+        tmp.y = y + rhs.y;
+        return tmp;
+    }
+    point operator-(const point& rhs) const {
+        point tmp;
+        tmp.x = x - rhs.x;
+        tmp.y = y - rhs.y;
+        return tmp;
+    }
+
+    int         x;
+    int         y;
+};
+
+/*
+ * Virtual key representation.  Valid when keycode != -1.
+ */
+struct vkey {
+    vkey() : keycode(-1) {}
+    int         keycode;
+    point       min;
+    point       max;
+};
+
+/*
+ * Input device representation.  Valid when fd != -1.
+ * This holds all information and state related to a given input device.
+ */
+struct input_device {
+    input_device() : fd(-1) {}
+
+    int         fd;
+    vkey        virtual_keys[MAX_NR_VKEYS];
+    point       touch_min;
+    point       touch_max;
+
+    int         rel_sum;        // Accumulated relative movement
+
+    bool        saw_pos_x;      // Did this sequence have an ABS_MT_POSITION_X?
+    bool        saw_pos_y;      // Did this sequence have an ABS_MT_POSITION_Y?
+    bool        saw_mt_report;  // Did this sequence have an SYN_MT_REPORT?
+    bool        in_touch;       // Are we in a touch event?
+    bool        in_swipe;       // Are we in a swipe event?
+
+    point       touch_pos;      // Current touch coordinates
+    point       touch_start;    // Coordinates of touch start
+    point       touch_track;    // Last tracked coordinates
+
+    int         slot_nr_active;
+    int         slot_first;
+    int         slot_current;
+    int         tracking_id;
 };
 
 // Abstract class for controlling the user interface during recovery.
@@ -40,6 +97,8 @@ class RecoveryUI {
 
     // Initialize the object; called before anything else.
     virtual void Init();
+    // Show a stage indicator.  Call immediately after Init().
+    virtual void SetStage(int current, int max) { }
 
     // After calling Init(), you can tell the UI what locale it is operating in.
     virtual void SetLocale(const char* locale) { }
@@ -72,8 +131,10 @@ class RecoveryUI {
     // Write a message to the on-screen log (shown if the user has
     // toggled on the text display).
     virtual void Print(const char* fmt, ...) = 0; // __attribute__((format(printf, 1, 2))) = 0;
+    virtual void ClearLog() = 0;
     virtual void DialogShowInfo(const char* text) = 0;
     virtual void DialogShowError(const char* text) = 0;
+    virtual void DialogShowErrorLog(const char* text) = 0;
     virtual int  DialogShowing() const = 0;
     virtual bool DialogDismissable() const = 0;
     virtual void DialogDismiss() = 0;
@@ -110,7 +171,7 @@ class RecoveryUI {
     virtual void KeyLongPress(int key);
 
     // --- menu display ---
-    
+
     virtual int MenuItemStart() const = 0;
     virtual int MenuItemHeight() const = 0;
 
@@ -122,7 +183,7 @@ class RecoveryUI {
 
     // Set the menu highlight to the given index, and return it (capped to
     // the range [0..numitems).
-    virtual int SelectMenu(int sel) = 0;
+    virtual int SelectMenu(int sel, bool abs = false) = 0;
 
     // End menu mode, resetting the text overlay so that ui_print()
     // statements will be displayed.
@@ -150,17 +211,9 @@ private:
     int consecutive_alternate_keys;
     int last_key;
 
-    // Swipe tracking
-    int in_touch; // 1 = in a touch
-    int in_swipe;
-
-    point touch_start;
-    point touch_end;
-    point touch_last;
+    input_device input_devices[MAX_NR_INPUT_DEVICES];
 
     point fb_dimensions;
-    point touch_min;
-    point touch_max;
     point min_swipe_px;
 
     MessageSocket message_socket;
@@ -175,7 +228,10 @@ private:
 
     static void* input_thread(void* cookie);
     static int input_callback(int fd, short revents, void* data);
-    void process_key(int key_code, int updown);
+    void process_key(input_device* dev, int key_code, int updown);
+    void process_syn(input_device* dev, int code, int value);
+    void process_abs(input_device* dev, int code, int value);
+    void process_rel(input_device* dev, int code, int value);
     bool usb_connected();
     bool VolumesChanged();
 
@@ -183,13 +239,12 @@ private:
     void time_key(int key_code, int count);
 
     void process_touch(int fd, struct input_event *ev);
-    void calibrate_touch(int fd);
+    void calibrate_touch(input_device* dev);
+    void setup_vkeys(input_device* dev);
     void calibrate_swipe();
-    int  touch_scale_x(int val);
-    int  touch_scale_y(int val);
-    void handle_press();
-    void handle_release();
-    void handle_gestures();
+    void handle_press(input_device* dev);
+    void handle_release(input_device* dev);
+    void handle_gestures(input_device* dev);
 };
 
 #endif  // RECOVERY_UI_H
