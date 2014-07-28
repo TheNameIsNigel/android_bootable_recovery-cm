@@ -108,8 +108,8 @@ static const struct option OPTIONS[] = {
 static const char *CACHE_LOG_DIR = "/cache/recovery";
 static const char *COMMAND_FILE = "/cache/recovery/command";
 static const char *INTENT_FILE = "/cache/recovery/intent";
-static const char *LOG_FILE = "/sdcard/0/cotrecovery/recovery_log.ngl";
-static const char *LAST_INSTALL_FILE = "/sdcard/0/cotrecovery/last_install.ngl";
+static const char *LOG_FILE = "/cache/recovery/log.poc";
+static const char *LAST_INSTALL_FILE = "/cache/recovery/last_install.poc";
 static const char *LOCALE_FILE = "/cache/recovery/last_locale";
 static const char *CACHE_ROOT = "/cache";
 static const char *TEMPORARY_LOG_FILE = "/tmp/recovery.log";
@@ -1107,6 +1107,9 @@ prompt_and_wait(Device* device, int status) {
                     break;
                     
                 case Device::RECOVERY_SETTINGS:
+					break;
+					
+                case Device::BACKUP:
 					break;
 
                 case Device::APPLY_UPDATE:
