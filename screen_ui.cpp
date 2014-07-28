@@ -456,33 +456,21 @@ void ScreenRecoveryUI::progress_loop() {
 }
 
 void ScreenRecoveryUI::LoadBitmap(const char* filename, gr_surface* surface) {
-	const char* theme = "bloodred/";
-	char buffer[256];
-	strncpy(buffer, theme, sizeof(buffer));
-	strncat(buffer, filename, sizeof(buffer));
-    int result = res_create_display_surface(buffer, surface);
+    int result = res_create_display_surface(filename, surface);
     if (result < 0) {
         LOGE("missing bitmap %s\n(Code %d)\n", filename, result);
     }
 }
 
 void ScreenRecoveryUI::LoadBitmapArray(const char* filename, int* frames, gr_surface** surface) {
-    const char* theme = "bloodred/";
-	char buffer[256];
-	strncpy(buffer, theme, sizeof(buffer));
-	strncat(buffer, filename, sizeof(buffer));
-    int result = res_create_multi_display_surface(buffer, frames, surface);
+    int result = res_create_multi_display_surface(filename, frames, surface);
     if (result < 0) {
         LOGE("missing bitmap %s\n(Code %d)\n", filename, result);
     }
 }
 
 void ScreenRecoveryUI::LoadLocalizedBitmap(const char* filename, gr_surface* surface) {
-    const char* theme = "bloodred/";
-	char buffer[256];
-	strncpy(buffer, theme, sizeof(buffer));
-	strncat(buffer, filename, sizeof(buffer));
-    int result = res_create_localized_alpha_surface(buffer, locale, surface);
+    int result = res_create_localized_alpha_surface(filename, locale, surface);
     if (result < 0) {
         LOGE("missing bitmap %s\n(Code %d)\n", filename, result);
     }
