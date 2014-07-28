@@ -13,11 +13,4 @@
  * limitations under the License.
  */
 
-namespace Settings {
-	class COT {
-		public:
-			COT();
-			~COT();
-			static void COT::show_settings_menu(Device* device);
-	};
-}
+static void show_settings_menu(Device* device);
