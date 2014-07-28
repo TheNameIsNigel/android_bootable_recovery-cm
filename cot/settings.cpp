@@ -22,6 +22,7 @@
 #include <unistd.h>
 
 #include "../bootloader.h"
+#include "../common.h"
 #include "cutils/properties.h"
 #include "cutils/android_reboot.h"
 #include "../install.h"
@@ -31,13 +32,13 @@
 #include "../ui.h"
 #include "../screen_ui.h"
 #include "../device.h"
-#include "../common.h"
 
 #include "cutils/properties.h"
 
 #include "../voldclient/voldclient.h"
 
 #include "includes.h"
+#include "external.h"
 
 extern RecoveryUI* ui;
 

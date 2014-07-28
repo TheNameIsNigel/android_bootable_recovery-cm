@@ -20,8 +20,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-int get_menu_selection(const char* const * headers, const char* const * items, int menu_only, int initial_selection, Device* device);
-
 #ifdef __cplusplus
 extern "C" {
 #endif
