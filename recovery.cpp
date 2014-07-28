@@ -1112,7 +1112,7 @@ prompt_and_wait(Device* device, int status) {
                     break;
                     
                 case Device::RECOVERY_SETTINGS:
-					show_settings_menu(device);
+					COTSettings::ShowMainMenu(device);
 					break;
 					
                 case Device::BACKUP:

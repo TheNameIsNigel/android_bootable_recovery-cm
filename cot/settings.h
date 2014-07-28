@@ -13,4 +13,7 @@
  * limitations under the License.
  */
 
-void show_settings_menu(Device* device);
+class COTSettings {
+	public:
+		void ShowMainMenu(Device* device);
+}

@@ -42,7 +42,7 @@
 
 extern RecoveryUI* ui;
 
-void show_settings_menu(Device* device) {
+void COTSettings::ShowMainMenu(Device* device) {
     static const char* SettingsMenuHeaders[] = { "Settings",
         "",
         NULL
