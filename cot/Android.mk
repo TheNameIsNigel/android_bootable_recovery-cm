@@ -19,7 +19,9 @@ LOCAL_MODULE_TAGS := eng
 
 LOCAL_SRC_FILES := \
     settings.cpp \
-    theme.cpp
+    theme.cpp \
+    iniparser/iniparser.c \
+    iniparser/dictionary.c
     
 LOCAL_CFLAGS += -DUSE_EXT4 -DMINIVOLD
 LOCAL_C_INCLUDES += system/extras/ext4_utils system/core/fs_mgr/include external/fsck_msdos
