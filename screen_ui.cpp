@@ -459,7 +459,7 @@ void ScreenRecoveryUI::progress_loop() {
 
 void ScreenRecoveryUI::LoadBitmap(const char* filename, gr_surface* surface) {
 	char t_filename[256];
-	strncpy(t_filename, COTTheme::theme_name, sizeof(t_filename));
+	strncpy(t_filename, COTTheme::theme_path, sizeof(t_filename));
 	strncat(t_filename, filename, sizeof(t_filename));
     int result = res_create_display_surface(t_filename, surface);
     if (result < 0) {
@@ -469,7 +469,7 @@ void ScreenRecoveryUI::LoadBitmap(const char* filename, gr_surface* surface) {
 
 void ScreenRecoveryUI::LoadBitmapArray(const char* filename, int* frames, gr_surface** surface) {
     char t_filename[256];
-	strncpy(t_filename, COTTheme::theme_name, sizeof(t_filename));
+	strncpy(t_filename, COTTheme::theme_path, sizeof(t_filename));
 	strncat(t_filename, filename, sizeof(t_filename));
     int result = res_create_multi_display_surface(t_filename, frames, surface);
     if (result < 0) {
