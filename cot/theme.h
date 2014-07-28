@@ -15,7 +15,6 @@
 
 class COTTheme {
 	public:
-		int selected_theme;
 		static void ShowMainMenu(Device* device);
 };
 
