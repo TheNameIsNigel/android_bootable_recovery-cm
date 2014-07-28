@@ -31,6 +31,8 @@
 
 #include "minui.h"
 
+#include "../cot/includes.h"
+
 #ifdef SHARED_MINUI
 char *locale = NULL;
 #else
@@ -54,7 +56,7 @@ static int open_png(const char* name, png_structp* png_ptr, png_infop* info_ptr,
     unsigned char header[8];
     int result = 0;
 
-    snprintf(resPath, sizeof(resPath)-1, "/res/images/%s.png", name);
+    snprintf(resPath, sizeof(resPath)-1, "/res/images/%s/%s.png", theme_name, name);
     resPath[sizeof(resPath)-1] = '\0';
     FILE* fp = fopen(resPath, "rb");
     if (fp == NULL) {
@@ -201,10 +203,10 @@ static void transform_rgb_to_draw(unsigned char* input_row,
 }
 
 int res_create_display_surface(const char* name, gr_surface* pSurface) {
-	const char* theme = "bloodred/";
-	char t_filename[256];
-	strncpy(t_filename, theme, sizeof(t_filename));
-	strncat(t_filename, name, sizeof(t_filename));
+	//const char* theme = "bloodred/";
+	//char t_filename[256];
+	//strncpy(t_filename, theme, sizeof(t_filename));
+	//strncat(t_filename, name, sizeof(t_filename));
 	
     gr_surface surface = NULL;
     int result = 0;
@@ -215,7 +217,7 @@ int res_create_display_surface(const char* name, gr_surface* pSurface) {
 
     *pSurface = NULL;
 
-    result = open_png(t_filename, &png_ptr, &info_ptr, &width, &height, &channels);
+    result = open_png(name, &png_ptr, &info_ptr, &width, &height, &channels);
     if (result < 0) return result;
 
     surface = init_display_surface(width, height);
@@ -241,10 +243,10 @@ int res_create_display_surface(const char* name, gr_surface* pSurface) {
 }
 
 int res_create_multi_display_surface(const char* name, int* frames, gr_surface** pSurface) {
-    const char* theme = "bloodred/";
-	char t_filename[256];
-	strncpy(t_filename, theme, sizeof(t_filename));
-	strncat(t_filename, name, sizeof(t_filename));
+    //const char* theme = "bloodred/";
+	//char t_filename[256];
+	//strncpy(t_filename, theme, sizeof(t_filename));
+	//strncat(t_filename, name, sizeof(t_filename));
 	
     gr_surface* surface = NULL;
     int result = 0;
@@ -257,7 +259,7 @@ int res_create_multi_display_surface(const char* name, int* frames, gr_surface**
     *pSurface = NULL;
     *frames = -1;
 
-    result = open_png(t_filename, &png_ptr, &info_ptr, &width, &height, &channels);
+    result = open_png(name, &png_ptr, &info_ptr, &width, &height, &channels);
     if (result < 0) return result;
 
     *frames = 1;
@@ -320,10 +322,10 @@ exit:
 }
 
 int res_create_alpha_surface(const char* name, gr_surface* pSurface) {
-	const char* theme = "bloodred/";
-	char t_filename[256];
-	strncpy(t_filename, theme, sizeof(t_filename));
-	strncat(t_filename, name, sizeof(t_filename));
+	//const char* theme = "bloodred/";
+	//char t_filename[256];
+	//strncpy(t_filename, theme, sizeof(t_filename));
+	//strncat(t_filename, name, sizeof(t_filename));
 	
     gr_surface surface = NULL;
     int result = 0;
@@ -334,7 +336,7 @@ int res_create_alpha_surface(const char* name, gr_surface* pSurface) {
 
     *pSurface = NULL;
 
-    result = open_png(t_filename, &png_ptr, &info_ptr, &width, &height, &channels);
+    result = open_png(name, &png_ptr, &info_ptr, &width, &height, &channels);
     if (result < 0) return result;
 
     if (channels != 1) {
@@ -388,10 +390,10 @@ int res_create_localized_alpha_surface(const char* name,
                                        const char* locale,
                                        gr_surface* pSurface) {
 										  
-	const char* theme = "bloodred/";
-	char t_filename[256];
-	strncpy(t_filename, theme, sizeof(t_filename));
-	strncat(t_filename, name, sizeof(t_filename));
+	//const char* theme = "bloodred/";
+	//char t_filename[256];
+	//strncpy(t_filename, theme, sizeof(t_filename));
+	//strncat(t_filename, name, sizeof(t_filename));
 	
     gr_surface surface = NULL;
     int result = 0;
@@ -411,7 +413,7 @@ int res_create_localized_alpha_surface(const char* name,
         goto exit;
     }
 
-    result = open_png(t_filename, &png_ptr, &info_ptr, &width, &height, &channels);
+    result = open_png(name, &png_ptr, &info_ptr, &width, &height, &channels);
     if (result < 0) return result;
 
     if (channels != 1) {
