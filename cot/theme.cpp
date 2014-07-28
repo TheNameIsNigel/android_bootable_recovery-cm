@@ -60,7 +60,7 @@ void COTTheme::ShowMainMenu(Device* device) {
         int ThemeChoice = get_menu_selection(ThemeChooserHeaders, ThemeChooserItems, 0, 0, device);
         switch (ThemeChoice) {
             case THEME_CHOICE_RED:
-            case THEME_CHOICE_BLUE
+            case THEME_CHOICE_BLUE:
             break;
 
         case Device::kGoBack:
