@@ -45,6 +45,8 @@
 #include "voldclient/voldclient.h"
 
 #include "adb_install.h"
+
+#include "cot/includes.h"
 extern "C" {
 #include "minadbd/adb.h"
 #include "recovery_cmds.h"
@@ -1087,6 +1089,7 @@ prompt_and_wait(Device* device, int status) {
                     show_reboot_menu(device);
                     if (!ui->IsTextVisible()) return;
                     break;
+                    
                 case Device::WIPE_DATA:
                     wipe_data(ui->IsTextVisible(), device);
                     if (!ui->IsTextVisible()) return;
@@ -1107,6 +1110,7 @@ prompt_and_wait(Device* device, int status) {
                     break;
                     
                 case Device::RECOVERY_SETTINGS:
+					COTSettings::show_settings_menu(device);
 					break;
 					
                 case Device::BACKUP:
