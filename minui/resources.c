@@ -31,6 +31,8 @@
 
 #include "minui.h"
 
+#include "../cot/includes.h"
+
 #ifdef SHARED_MINUI
 char *locale = NULL;
 #else
@@ -201,7 +203,7 @@ static void transform_rgb_to_draw(unsigned char* input_row,
 }
 
 int res_create_display_surface(const char* name, gr_surface* pSurface) {
-	const char* theme = "bloodred/";
+	const char* theme = COTTheme::selected_theme;
 	char t_filename[256];
 	strncpy(t_filename, theme, sizeof(t_filename));
 	strncat(t_filename, name, sizeof(t_filename));
@@ -241,7 +243,7 @@ int res_create_display_surface(const char* name, gr_surface* pSurface) {
 }
 
 int res_create_multi_display_surface(const char* name, int* frames, gr_surface** pSurface) {
-    const char* theme = "bloodred/";
+    const char* theme = COTTheme::selected_theme;
 	char t_filename[256];
 	strncpy(t_filename, theme, sizeof(t_filename));
 	strncat(t_filename, name, sizeof(t_filename));
@@ -320,7 +322,7 @@ exit:
 }
 
 int res_create_alpha_surface(const char* name, gr_surface* pSurface) {
-	const char* theme = "bloodred/";
+	const char* theme = COTTheme::selected_theme;
 	char t_filename[256];
 	strncpy(t_filename, theme, sizeof(t_filename));
 	strncat(t_filename, name, sizeof(t_filename));
@@ -388,7 +390,7 @@ int res_create_localized_alpha_surface(const char* name,
                                        const char* locale,
                                        gr_surface* pSurface) {
 										  
-	const char* theme = "bloodred/";
+	const char* theme = COTTheme::selected_theme;
 	char t_filename[256];
 	strncpy(t_filename, theme, sizeof(t_filename));
 	strncat(t_filename, name, sizeof(t_filename));
