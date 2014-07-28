@@ -56,10 +56,11 @@ void COTSettings::ShowMainMenu(Device* device) {
         int SettingsSelection = get_menu_selection(SettingsMenuHeaders, SettingsMenuItems, 0, 0, device);
         switch (SettingsSelection) {
             case 0:
-            break;
+                COTTheme::ShowMainMenu(device);
+                break;
 
-        case Device::kGoBack:
-            return;
+            case Device::kGoBack:
+                return;
         }
     }
 }
