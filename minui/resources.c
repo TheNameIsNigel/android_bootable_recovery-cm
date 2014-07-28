@@ -203,8 +203,8 @@ static void transform_rgb_to_draw(unsigned char* input_row,
 int res_create_display_surface(const char* name, gr_surface* pSurface) {
 	const char* theme = "bloodred/";
 	char t_filename[256];
-	strncpy(t_filename, theme, sizeof(buffer));
-	strncat(t_filename, name, sizeof(buffer));
+	strncpy(t_filename, theme, sizeof(t_filename));
+	strncat(t_filename, name, sizeof(t_filename));
 	
     gr_surface surface = NULL;
     int result = 0;
@@ -243,8 +243,8 @@ int res_create_display_surface(const char* name, gr_surface* pSurface) {
 int res_create_multi_display_surface(const char* name, int* frames, gr_surface** pSurface) {
     const char* theme = "bloodred/";
 	char t_filename[256];
-	strncpy(t_filename, theme, sizeof(buffer));
-	strncat(t_filename, name, sizeof(buffer));
+	strncpy(t_filename, theme, sizeof(t_filename));
+	strncat(t_filename, name, sizeof(t_filename));
 	
     gr_surface* surface = NULL;
     int result = 0;
@@ -322,8 +322,8 @@ exit:
 int res_create_alpha_surface(const char* name, gr_surface* pSurface) {
 	const char* theme = "bloodred/";
 	char t_filename[256];
-	strncpy(t_filename, theme, sizeof(buffer));
-	strncat(t_filename, name, sizeof(buffer));
+	strncpy(t_filename, theme, sizeof(t_filename));
+	strncat(t_filename, name, sizeof(t_filename));
 	
     gr_surface surface = NULL;
     int result = 0;
@@ -390,8 +390,8 @@ int res_create_localized_alpha_surface(const char* name,
 										  
 	const char* theme = "bloodred/";
 	char t_filename[256];
-	strncpy(t_filename, theme, sizeof(buffer));
-	strncat(t_filename, name, sizeof(buffer));
+	strncpy(t_filename, theme, sizeof(t_filename));
+	strncat(t_filename, name, sizeof(t_filename));
 	
     gr_surface surface = NULL;
     int result = 0;
