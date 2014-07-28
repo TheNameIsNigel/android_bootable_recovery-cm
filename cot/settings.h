@@ -13,4 +13,4 @@
  * limitations under the License.
  */
 
-static void show_settings_menu(Device* device);
+void show_settings_menu(Device* device);

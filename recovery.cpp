@@ -47,6 +47,8 @@
 #include "adb_install.h"
 
 #include "cot/includes.h"
+#include "cot/external.h"
+
 extern "C" {
 #include "minadbd/adb.h"
 #include "recovery_cmds.h"

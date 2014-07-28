@@ -42,7 +42,7 @@
 
 extern RecoveryUI* ui;
 
-static void show_settings_menu(Device* device) {
+void show_settings_menu(Device* device) {
     static const char* SettingsMenuHeaders[] = { "Settings",
         "",
         NULL
