@@ -33,7 +33,7 @@
 #include "../screen_ui.h"
 #include "../device.h"
 
-#include "../cutils/properties.h"
+#include "cutils/properties.h"
 
 #include "../voldclient/voldclient.h"
 
@@ -41,9 +41,15 @@
 
 extern RecoveryUI* ui;
 
-namespace COTSettings
+namespace Settings
 {
-	static void show_settings_menu(Device* device) {
+    COT::COT() {
+    }
+    
+    COT::~COT() {
+    }
+    
+	static void COT::show_settings_menu(Device* device) {
 		static const char* SettingsMenuHeaders[] = { "Settings",
 			"",
 			NULL
