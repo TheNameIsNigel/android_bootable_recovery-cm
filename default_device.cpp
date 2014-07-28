@@ -28,7 +28,7 @@ static const char* HEADERS[] = { "Swipe up/down to change selections;",
                                  NULL };
 
 static const char* ITEMS[] =  {"Reboot",
-			       "Backup to PC",
+							   "Backup to PC",
                                "Flash ZIP",
                                "Factory Reset",
                                "Erase Cache",
