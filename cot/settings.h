@@ -16,4 +16,4 @@
 class COTSettings {
 	public:
 		void ShowMainMenu(Device* device);
-}
+};
