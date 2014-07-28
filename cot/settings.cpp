@@ -23,8 +23,8 @@
 
 #include "../bootloader.h"
 #include "../common.h"
-#include "../cutils/properties.h"
-#include "../cutils/android_reboot.h"
+#include "cutils/properties.h"
+#include "cutils/android_reboot.h"
 #include "../install.h"
 #include "../minui/minui.h"
 #include "../minzip/DirUtil.h"
