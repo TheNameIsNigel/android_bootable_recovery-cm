@@ -12,6 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-#include "settings.h"
-#include "theme.h"
+
+class COTTheme {
+	public:
+		static void ShowMainMenu(Device* device);
+};
+

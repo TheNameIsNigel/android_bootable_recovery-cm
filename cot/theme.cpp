@@ -40,22 +40,27 @@
 #include "includes.h"
 #include "external.h"
 
+#define THEME_CHOICE_RED 0
+#define THEME_CHOICE_BLUE 1
+
 extern RecoveryUI* ui;
 
-void COTSettings::ShowMainMenu(Device* device) {
-    static const char* SettingsMenuHeaders[] = { "Settings",
+void COTTheme::ShowMainMenu(Device* device) {
+    static const char* ThemeChooserHeaders[] = { "Choose Theme",
         "",
         NULL
     };
 
-    static const char* SettingsMenuItems[] = { "Theme",
+    static const char* ThemeChooserItems[] = { "Blood Red (default)",
+		"Hydro Blue",
         NULL
     };
 
     for (;;) {
-        int SettingsSelection = get_menu_selection(SettingsMenuHeaders, SettingsMenuItems, 0, 0, device);
-        switch (SettingsSelection) {
-            case 0:
+        int ThemeChoice = get_menu_selection(ThemeChooserHeaders, ThemeChooserItems, 0, 0, device);
+        switch (ThemeChoice) {
+            case THEME_CHOICE_RED:
+            case THEME_CHOICE_BLUE
             break;
 
         case Device::kGoBack:
@@ -63,3 +68,4 @@ void COTSettings::ShowMainMenu(Device* device) {
         }
     }
 }
+
