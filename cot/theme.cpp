@@ -63,10 +63,12 @@ void COTTheme::ShowMainMenu(Device* device) {
         switch (ThemeChoice) {
             case THEME_CHOICE_RED:
 				COTTheme::theme_path = "bloodred/";
+				printf("COTTheme: set path to %s\n", COTTheme::theme_path);
 				break;
 				
             case THEME_CHOICE_BLUE:
 				COTTheme::theme_path = "hydro/";
+				printf("COTTheme: set path to %s\n", COTTheme::theme_path);
 				break;
 
 			case Device::kGoBack:
