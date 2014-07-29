@@ -319,9 +319,6 @@ int RecoveryUI::input_callback(int fd, short revents, void* data)
     }
 
     switch (ev.type) {
-	case EV_KEY:
-        self->process_key(dev, ev.code, ev.value);
-        break;
     case EV_SYN:
         self->process_syn(dev, ev.code, ev.value);
         break;
@@ -330,6 +327,9 @@ int RecoveryUI::input_callback(int fd, short revents, void* data)
         break;
     case EV_REL:
         self->process_rel(dev, ev.code, ev.value);
+        break;
+    case EV_KEY:
+        self->process_key(dev, ev.code, ev.value);
         break;
     }
 
