@@ -44,6 +44,7 @@
 #define THEME_CHOICE_BLUE 1
 
 extern RecoveryUI* ui;
+extern ScreenRecoveryUI* screen;
 
 const char* COTTheme::theme_path = "bloodred/";
 
@@ -75,6 +76,6 @@ void COTTheme::ShowMainMenu(Device* device) {
 				return;
         }
     }
-    ui->Init();
+    screen->Init();
 }
 
