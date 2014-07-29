@@ -75,5 +75,6 @@ void COTTheme::ShowMainMenu(Device* device) {
 				return;
         }
     }
+    ui->Init();
 }
 
