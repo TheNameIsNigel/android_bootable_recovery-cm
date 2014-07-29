@@ -76,6 +76,6 @@ void COTTheme::ShowMainMenu(Device* device) {
 				return;
         }
     }
-    screen->Init();
+    screen->Redraw();
 }
 
