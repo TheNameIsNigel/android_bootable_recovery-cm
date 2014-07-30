@@ -21,6 +21,8 @@
 #include <pthread.h>
 #include <time.h>
 
+//#define DEBUG_EVENTS
+
 #include "messagesocket.h"
 
 #define MAX_NR_INPUT_DEVICES    8
@@ -70,17 +72,18 @@ struct input_device {
     point       touch_min;
     point       touch_max;
 
-    int         rel_sum;        // Accumulated relative movement
+    int         rel_sum;            // Accumulated relative movement
 
-    bool        saw_pos_x;      // Did this sequence have an ABS_MT_POSITION_X?
-    bool        saw_pos_y;      // Did this sequence have an ABS_MT_POSITION_Y?
-    bool        saw_mt_report;  // Did this sequence have an SYN_MT_REPORT?
-    bool        in_touch;       // Are we in a touch event?
-    bool        in_swipe;       // Are we in a swipe event?
+    bool        saw_pos_x;          // Did this sequence have an ABS_MT_POSITION_X?
+    bool        saw_pos_y;          // Did this sequence have an ABS_MT_POSITION_Y?
+    bool        saw_mt_report;      // Did this sequence have an SYN_MT_REPORT?
+    bool        saw_tracking_id;    // Did sequence have SYN_TRACKING_ID? 
+    bool        in_touch;           // Are we in a touch event?
+    bool        in_swipe;           // Are we in a swipe event?
 
-    point       touch_pos;      // Current touch coordinates
-    point       touch_start;    // Coordinates of touch start
-    point       touch_track;    // Last tracked coordinates
+    point       touch_pos;          // Current touch coordinates
+    point       touch_start;        // Coordinates of touch start
+    point       touch_track;        // Last tracked coordinates
 
     int         slot_nr_active;
     int         slot_first;
