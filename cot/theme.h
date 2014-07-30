@@ -13,12 +13,9 @@
  * limitations under the License.
  */
 
-extern "C" {
-	const char* theme_name = "bloodred";
-}
-
 class COTTheme {
 	public:
+		static const char* theme_path;
 		static void ShowMainMenu(Device* device);
 };
 

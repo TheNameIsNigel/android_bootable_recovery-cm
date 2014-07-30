@@ -44,6 +44,9 @@
 #define THEME_CHOICE_BLUE 1
 
 extern RecoveryUI* ui;
+extern ScreenRecoveryUI* screen;
+
+const char* COTTheme::theme_path = "bloodred/";
 
 void COTTheme::ShowMainMenu(Device* device) {
     static const char* ThemeChooserHeaders[] = { "Choose Theme",
@@ -60,12 +63,19 @@ void COTTheme::ShowMainMenu(Device* device) {
         int ThemeChoice = get_menu_selection(ThemeChooserHeaders, ThemeChooserItems, 0, 0, device);
         switch (ThemeChoice) {
             case THEME_CHOICE_RED:
+				COTTheme::theme_path = "bloodred/";
+				printf("COTTheme: set path to %s\n", COTTheme::theme_path);
+				break;
+				
             case THEME_CHOICE_BLUE:
+				COTTheme::theme_path = "hydro/";
+				printf("COTTheme: set path to %s\n", COTTheme::theme_path);
 				break;
 
 			case Device::kGoBack:
 				return;
         }
     }
+    screen->Redraw();
 }
 

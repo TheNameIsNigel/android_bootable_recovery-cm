@@ -335,7 +335,7 @@ static void gr_init_one_font(int idx)
         gr_font->cwidth = gr_font->texture->width / 96;
         gr_font->cheight = gr_font->texture->height / 2;
     } else {
-        printf("failed to read font: res=%d\n", res);
+        printf("failed to read font: font=%s\n", name);
 
         // fall back to the compiled-in font.
         gr_font->texture = malloc(sizeof(*gr_font->texture));
